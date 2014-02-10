@@ -28,7 +28,7 @@ class CartengineServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		$this->app->singleton('Werkzeugh\Cartengine\Interfaces\OrderRepositoryInterface','Werkzeugh\Cartengine\Repositories\OrderRepository');
 	}
 
 	/**
