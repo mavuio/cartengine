@@ -1,0 +1,33 @@
+php artisan generate:migration create_orders_table --fields=" \
+order_nr:string:unique, \
+invoice_nr:string:unique, \
+cart_json:text, \
+log_json:text, \
+total_price:decimal[5], \
+total_items:integer, \
+payment_status:string, \
+payment_transaction_id:string:unique, \
+payment_secret:string, \
+status:string, \
+payment_type:string, \
+delivery_type:string, \
+email:string, \
+phone:string, \
+title:string, \
+firstname:string, \
+lastname:string, \
+company:string, \
+company_uid:string, \
+gender:string, \
+country:string, \
+street:string, \
+city:string, \
+zip:string, \
+use_delivery_address:boolean, \
+delivery_name:string, \
+delivery_country:string, \
+delivery_street:string, \
+delivery_city:string, \
+delivery_zip:string, \
+delivery_phone:string, \
+"

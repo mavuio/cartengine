@@ -19,6 +19,8 @@ class CartengineServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('werkzeugh/cartengine');
+	  require_once __DIR__.'/exceptions.php';
+
 	}
 
 	/**
@@ -28,7 +30,11 @@ class CartengineServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->app->singleton('Werkzeugh\Cartengine\Interfaces\OrderRepositoryInterface','Werkzeugh\Cartengine\Repositories\OrderRepository');
+
+		$this->app->singleton('Werkzeugh\Cartengine\Interfaces\SofortpayInterface',      'Werkzeugh\Sofortpay\SofortpayService');
+		$this->app->singleton('Werkzeugh\Cartengine\Interfaces\OrderRepositoryInterface','Werkzeugh\Cartengine\Repositories\OrderDbRepository');
+		$this->app->bind(     'Werkzeugh\Cartengine\Interfaces\OrderInterface',          'Werkzeugh\Cartengine\Models\DbOrder');
+
 	}
 
 	/**

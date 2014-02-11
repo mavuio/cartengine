@@ -1,12 +1,10 @@
 <?php namespace Werkzeugh\Cartengine\Interfaces;
 
 
-interface OrderInterface{
+interface SofortpayInterface{
 
-  function getOrderNr();
+  function getLib($configkey);
 
-
-  function add2Log($msg,$data);
 //  function getOrderNr($ordernr);
 
 
