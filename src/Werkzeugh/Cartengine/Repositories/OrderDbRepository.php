@@ -111,6 +111,8 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $transaction_id=$orderdata['transaction_id'];
 
+    if($orderdata['mail_html'])
+      $orderdata['mail_html']=$this->cleanUpMailHtml($orderdata['mail_html']);
     if($transaction_id)
     {
        $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
@@ -134,6 +136,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
           $orderdata['transaction_id'],
           $orderdata['order_nr']);
 
+
     $ordrec->fill($orderdata);
 
     if($ordrec->save())
@@ -141,6 +144,17 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
     else
       return NULL;
 
+  }
+
+
+  function cleanUpMailHtml($html)
+  {
+
+    $html=preg_replace('#<!--(.*)-->#Uis', '', $html);
+    $html=preg_replace('# ?class="ng-[a-z]+"#mis','',$html);
+    $html=preg_replace('# ?(ng-[a-z-]+|translate)="[^"]*"#mis','',$html);
+
+    return $html;
   }
 
 
