@@ -145,12 +145,13 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $ordrec->items_json=json_encode($cart['items']);
 
+    if($orderdata['mail_html'])
+      $ordrec->mail_html=$this->cleanUpMailHtml($orderdata['mail_html']);
+
     unset($orderdata['agb_confirmed'],
           $orderdata['transaction_id'],
-          $orderdata['order_nr']);
-
-    if($orderdata['mail_html'])
-      $orderdata['mail_html']=$this->cleanUpMailHtml($orderdata['mail_html']);
+          $orderdata['order_nr'],
+          $orderdata['mail_html']);
 
     $ordrec->fill($orderdata);
 
@@ -181,6 +182,8 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
             {
             $ret['status']='ok';
             $ret['order']=$ordrec->getAttributes();
+            \Log::info("Order id:{$ret[order][id]} created", array('order' => $ret['order']));
+            $event = \Event::fire('order.created',array($ret['order']));
             }
          }
 

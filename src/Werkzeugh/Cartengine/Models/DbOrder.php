@@ -7,7 +7,7 @@ class DbOrder extends \Illuminate\Database\Eloquent\Model implements \Werkzeugh\
 
     protected $table = 'orders';
 
-     protected $guarded = array('id','created_at','updated_at','transaction_id','order_nr','status','payment_status');
+     protected $guarded = array('id','created_at','updated_at','mail_html','log_json','transaction_id','order_nr','status','payment_status');
 
 
     function getOrderNr()

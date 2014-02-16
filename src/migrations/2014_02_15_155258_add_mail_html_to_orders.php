@@ -15,7 +15,7 @@ class AddMailHtmlToOrders extends Migration {
 
 		 Schema::table('orders', function($table)
         {
-                $table->string('mail_html');
+                $table->text('mail_html');
 				});
 
 	}
