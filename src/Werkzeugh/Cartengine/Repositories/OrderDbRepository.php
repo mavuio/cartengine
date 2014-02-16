@@ -87,6 +87,21 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
     return FALSE;
   }
 
+  public function forceSetValuesForOrder($values,$transaction_id)
+  {
+
+    $rec=$this->getOrderAsModelByTransactionId($transaction_id);
+
+    if($rec)
+    {
+      foreach ($values as $key => $value) {
+          $rec->$key=$value;
+      }
+      $rec->save();
+      return TRUE;
+    }
+    return FALSE;
+  }
 
   public function logMessageForOrder($msg,$data,$transaction_id)
   {
@@ -111,8 +126,6 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $transaction_id=$orderdata['transaction_id'];
 
-    if($orderdata['mail_html'])
-      $orderdata['mail_html']=$this->cleanUpMailHtml($orderdata['mail_html']);
     if($transaction_id)
     {
        $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
@@ -136,6 +149,8 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
           $orderdata['transaction_id'],
           $orderdata['order_nr']);
 
+    if($orderdata['mail_html'])
+      $orderdata['mail_html']=$this->cleanUpMailHtml($orderdata['mail_html']);
 
     $ordrec->fill($orderdata);
 
@@ -143,6 +158,66 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
       return $ordrec->getAttributes();
     else
       return NULL;
+
+  }
+
+
+  function finalizeOrder(array $cart)
+  {
+
+    $ret=Array('status'=>'error');
+
+    $orderdata=$cart['orderdata'];
+    $transaction_id=$orderdata['transaction_id'];
+    if($transaction_id)
+    {
+       $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
+       if($ordrec)
+       {
+         if($this->orderIsFinished($ordrec->getAttributes()))
+         {
+            $ordrec->status='created';
+            if($ordrec->save())
+            {
+            $ret['status']='ok';
+            $ret['order']=$ordrec->getAttributes();
+            }
+         }
+
+       }
+    }
+
+
+
+    return $ret;
+
+  }
+
+
+  function orderIsFinished(array $ordrec)
+  {
+        if(!$ordrec['order_nr'])
+          return false ;
+
+        if ($this->paymentTypeNeedsImmediatePayment($ordrec['payment_type']))
+        {
+          if($ordrec['payment_status']=='paid')
+            return false;
+        }
+
+        return true;
+
+  }
+
+  function paymentTypeNeedsImmediatePayment($type)
+  {
+
+      if($type=='sofort_com')
+          return true;
+      if($type=='paypal')
+          return true;
+      if($type=='wirecard')
+          return true;
 
   }
 
