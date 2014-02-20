@@ -6,12 +6,25 @@ use App;
 class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderRepositoryInterface {
 
 
+
+  public function getOrderAsArray($rec)
+  {
+
+    $arr=$rec->getAttributes();
+
+    $arr['items']=json_decode($arr['items_json'],1);
+    unset($arr['items_json']);
+    // unset($arr['items_json']);
+
+    return $arr;
+  }
+
   function getOrderByOrderNr($ordernr)
   {
 
     $res=$this->getOrderAsModelByOrderNr($ordernr);
     if($res)
-      return $res->getAttributes();
+      return $this->getOrderAsArray($res);
     else
       return NULL;
 
@@ -37,7 +50,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $res=$this->getOrderAsModelByTransactionId($transaction_id);
     if($res)
-      return $res->getAttributes();
+      return $this->getOrderAsArray($res);
     else
       return NULL;
 
@@ -131,7 +144,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
        $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
 
        if($ordrec && $ordrec->order_nr)
-          return $ordrec->getAttributes();  // do not save again, just return order, if it was already savedhr
+          return $this->getOrderAsArray($ordrec);  // do not save again, just return order, if it was already savedhr
        $ordrec=App::make('Werkzeugh\Cartengine\Interfaces\OrderInterface');
        $ordrec->transaction_id=$transaction_id;
 
@@ -156,7 +169,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
     $ordrec->fill($orderdata);
 
     if($ordrec->save())
-      return $ordrec->getAttributes();
+      return $this->getOrderAsArray($ordrec);
     else
       return NULL;
 
@@ -175,13 +188,13 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
        $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
        if($ordrec)
        {
-         if($this->orderIsFinished($ordrec->getAttributes()))
+         if($this->orderIsFinished($this->getOrderAsArray($ordrec)))
          {
             $ordrec->status='created';
             if($ordrec->save())
             {
             $ret['status']='ok';
-            $ret['order']=$ordrec->getAttributes();
+            $ret['order']=$this->getOrderAsArray($ordrec);
             \Log::info("Order id:{$ret[order][id]} created", array('order' => $ret['order']));
             $event = \Event::fire('order.created',array($ret['order']));
             }
