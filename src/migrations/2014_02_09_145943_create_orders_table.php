@@ -47,12 +47,12 @@ class CreateOrdersTable extends Migration {
 			$table->string('zip')->default('');
 
 			$table->boolean('use_delivery_address')->default(0);
-			$table->string('delivery_name')->default('');
-			$table->string('delivery_country')->default('');
-			$table->string('delivery_street')->default('');
-			$table->string('delivery_city')->default('');
-			$table->string('delivery_zip')->default('');
-			$table->string('delivery_phone')->default('');
+			$table->string('delivery_name')->default('')->nullable();
+			$table->string('delivery_country')->default('')->nullable();
+			$table->string('delivery_street')->default('')->nullable();
+			$table->string('delivery_city')->default('')->nullable();
+			$table->string('delivery_zip')->default('')->nullable();
+			$table->string('delivery_phone')->default('')->nullable();
 
 			$table->timestamps();
 		});
