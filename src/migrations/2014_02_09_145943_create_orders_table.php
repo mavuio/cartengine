@@ -33,18 +33,18 @@ class CreateOrdersTable extends Migration {
 			$table->string('payment_type')->default('');
 			$table->string('delivery_type')->default('');
 
-			$table->string('email')->default('');
-			$table->string('phone')->default('');
-			$table->string('title')->default('');
-			$table->string('firstname')->default('');
-			$table->string('lastname')->default('');
-			$table->string('company')->default('');
-			$table->string('company_uid')->default('');
-			$table->string('gender')->default('');
-			$table->string('country')->default('');
-			$table->string('street')->default('');
-			$table->string('city')->default('');
-			$table->string('zip')->default('');
+			$table->string('email')->default('')->nullable();
+			$table->string('phone')->default('')->nullable();
+			$table->string('title')->default('')->nullable();
+			$table->string('firstname')->default('')->nullable();
+			$table->string('lastname')->default('')->nullable();
+			$table->string('company')->default('')->nullable();
+			$table->string('company_uid')->default('')->nullable();
+			$table->string('gender')->default('')->nullable();
+			$table->string('country')->default('')->nullable();
+			$table->string('street')->default('')->nullable();
+			$table->string('city')->default('')->nullable();
+			$table->string('zip')->default('')->nullable();
 
 			$table->boolean('use_delivery_address')->default(0);
 			$table->string('delivery_name')->default('')->nullable();
