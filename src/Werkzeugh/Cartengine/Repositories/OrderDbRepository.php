@@ -183,6 +183,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $orderdata=$cart['orderdata'];
     $transaction_id=$orderdata['transaction_id'];
+
     if($transaction_id)
     {
        $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
@@ -217,7 +218,9 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
         if ($this->paymentTypeNeedsImmediatePayment($ordrec['payment_type']))
         {
-          if($ordrec['payment_status']=='paid')
+            if($ordrec['payment_status']=='paid'){
+                return true;
+            }
             return false;
         }
 
