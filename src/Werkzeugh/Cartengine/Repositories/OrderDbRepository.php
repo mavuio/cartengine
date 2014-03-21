@@ -119,7 +119,6 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   public function logMessageForOrder($msg,$data,$transaction_id)
   {
 
-    echo "logMessageForOrder $msg $transaction_id";
 
     \Log::info("cartengine-transaction[$transaction_id]: $msg", $data);
 
@@ -176,9 +175,17 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   }
 
 
-  function finalizeOrder(array $cart)
+  function finalizeOrder($transaction_id)
   {
 
+
+      if(is_array($transaction_id))
+      {
+          // legacy code for old version of this function, an array was given instead of a 
+          $transaction_id=$transaction_id['transaction_id'];
+      }
+      
+      
     $ret=Array('status'=>'error');
 
     $orderdata=$cart['orderdata'];
