@@ -153,7 +153,11 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
       throw new \Exception("no transaction_id given in orderdata");
     }
 
-    $ordrec->order_nr=$this->createNewOrderNr();
+    if ($orderdata['order_nr']) {
+        $ordrec->order_nr=$orderdata['order_nr'];
+    } else {
+        $ordrec->order_nr=$this->createNewOrderNr();      
+    }
 
     $ordrec->items_json=json_encode($cart['items']);
 
