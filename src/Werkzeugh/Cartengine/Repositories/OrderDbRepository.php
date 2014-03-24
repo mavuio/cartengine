@@ -6,6 +6,13 @@ use App;
 class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderRepositoryInterface {
 
 
+  function getModel()
+  {
+
+        $model=\App::make('Werkzeugh\Cartengine\Interfaces\OrderInterface');
+
+        return $model;
+  }
 
   public function getOrderAsArray($rec)
   {
