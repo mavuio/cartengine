@@ -126,7 +126,6 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   public function logMessageForOrder($msg,$data,$transaction_id)
   {
 
-    echo "logMessageForOrder $msg $transaction_id";
 
     \Log::info("cartengine-transaction[$transaction_id]: $msg", $data);
 
@@ -161,7 +160,11 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
       throw new \Exception("no transaction_id given in orderdata");
     }
 
-    $ordrec->order_nr=$this->createNewOrderNr();
+    if ($orderdata['order_nr']) {
+        $ordrec->order_nr=$orderdata['order_nr'];
+    } else {
+        $ordrec->order_nr=$this->createNewOrderNr();      
+    }
 
     $ordrec->items_json=json_encode($cart['items']);
 
@@ -183,13 +186,22 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   }
 
 
-  function finalizeOrder(array $cart)
+  function finalizeOrder($transaction_id)
   {
 
+
+      if(is_array($transaction_id))
+      {
+          // legacy code for old version of this function, an array was given instead of a 
+          $transaction_id=$transaction_id['transaction_id'];
+      }
+      
+      
     $ret=Array('status'=>'error');
 
     $orderdata=$cart['orderdata'];
     $transaction_id=$orderdata['transaction_id'];
+
     if($transaction_id)
     {
        $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
@@ -224,7 +236,9 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
         if ($this->paymentTypeNeedsImmediatePayment($ordrec['payment_type']))
         {
-          if($ordrec['payment_status']=='paid')
+            if($ordrec['payment_status']=='paid'){
+                return true;
+            }
             return false;
         }
 
