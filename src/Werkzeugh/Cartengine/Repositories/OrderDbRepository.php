@@ -175,6 +175,8 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $ordrec->fill($orderdata);
 
+    \Log::info("create order:{$ordrec->order_nr} created", array('order' =>  $this->getOrderAsArray($ordrec),'serverdata'=>$_SERVER));
+
     if($ordrec->save())
       return $this->getOrderAsArray($ordrec);
     else
@@ -224,7 +226,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
         if ($this->paymentTypeNeedsImmediatePayment($ordrec['payment_type']))
         {
-          if($ordrec['payment_status']=='paid')
+          if($ordrec['payment_status']!='paid')
             return false;
         }
 
