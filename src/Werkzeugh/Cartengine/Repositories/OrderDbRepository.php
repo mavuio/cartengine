@@ -41,15 +41,12 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   public function getOrderAsModelByOrderNr($ordernr)
   {
 
-
     $model=\App::make('Werkzeugh\Cartengine\Interfaces\OrderInterface');
     $res=$model->where('order_nr','=',$ordernr)->first();
 
     return $res;
 
   }
-
-
 
 
   function getOrderByTransactionId($transaction_id)
@@ -78,7 +75,6 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   public function createNewOrderNr()
   {
 
-     $GLOBALS['debugsql']=1;
 
      $maxID=App::make('Werkzeugh\Cartengine\Interfaces\OrderInterface')->query()->max('order_nr');
 
@@ -88,6 +84,23 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
      if($maxID<1)
         $maxID=Date('Y')*10000;
+
+     return $maxID+1;
+
+  }
+
+  public function createNewInvoiceNr()
+  {
+
+
+     $maxID=App::make('Werkzeugh\Cartengine\Interfaces\OrderInterface')->query()->max('invoice_nr');
+
+
+     if(is_object($maxID) )
+         throw new \Werkzeugh\Cartengine\InvoiceNrCreationFailedException("$maxID");
+
+     if($maxID<1)
+        $maxID=Date('Y')*100000;
 
      return $maxID+1;
 
@@ -201,8 +214,6 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
       
     $ret=Array('status'=>'error');
 
-    $orderdata=$cart['orderdata'];
-    $transaction_id=$orderdata['transaction_id'];
 
     if($transaction_id)
     {

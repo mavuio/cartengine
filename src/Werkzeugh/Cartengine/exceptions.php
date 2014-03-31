@@ -3,3 +3,4 @@
 use Exception;
 
 class OrderNrCreationFailedException extends Exception {}
+class InvoiceNrCreationFailedException extends Exception {}
