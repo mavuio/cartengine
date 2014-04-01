@@ -208,7 +208,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
       if(is_array($transaction_id))
       {
           // legacy code for old version of this function, an array was given instead of a 
-          $transaction_id=$transaction_id['transaction_id'];
+          $transaction_id=$transaction_id['orderdata']['transaction_id'];
       }
       
       
