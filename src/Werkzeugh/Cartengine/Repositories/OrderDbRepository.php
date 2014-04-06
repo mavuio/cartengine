@@ -183,11 +183,13 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     if($orderdata['mail_html'])
       $ordrec->mail_html=$this->cleanUpMailHtml($orderdata['mail_html']);
-
-    unset($orderdata['agb_confirmed'],
-          $orderdata['transaction_id'],
-          $orderdata['order_nr'],
-          $orderdata['mail_html']);
+    unset(
+    $orderdata['agb_confirmed'], //deprecated
+    $orderdata['terms_accepted'],
+    $orderdata['transaction_id'],
+    $orderdata['order_nr'],
+    $orderdata['mail_html']
+    );
 
     $ordrec->fill($orderdata);
 
