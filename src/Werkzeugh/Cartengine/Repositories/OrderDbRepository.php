@@ -100,7 +100,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
          throw new \Werkzeugh\Cartengine\InvoiceNrCreationFailedException("$maxID");
 
      if($maxID<1)
-        $maxID=Date('Y')*100000;
+        $maxID=100000;
 
      return $maxID+1;
 

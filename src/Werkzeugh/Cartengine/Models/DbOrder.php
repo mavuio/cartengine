@@ -10,14 +10,24 @@ class DbOrder extends \Illuminate\Database\Eloquent\Model implements \Werkzeugh\
      protected $guarded = array('id','created_at','updated_at','mail_html','log_json','transaction_id','order_nr','status','payment_status');
 
 
-    function getOrderNr()
+    public function getOrderNr()
     {
       return $this->order_nr;
     }
 
-     function getTransactionId()
+    public function getTransactionId()
     {
       return $this->transaction_id;
+    }
+
+    public function getItems()
+    {
+        return json_decode($this->items_json,1);
+    }
+
+    public function getRawItems()
+    {
+        return json_decode($this->raw_items_json,1);
     }
 
 
