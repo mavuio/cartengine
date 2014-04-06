@@ -1,5 +1,7 @@
 <?php namespace Werkzeugh\Cartengine;
 
+// comment for git-version test
+
 use Illuminate\Support\ServiceProvider;
 
 class CartengineServiceProvider extends ServiceProvider {
