@@ -1,6 +1,6 @@
 <?php namespace Werkzeugh\Cartengine;
 
-// comment for git-version test  final
+// comment for git-version test  post-final
 
 use Illuminate\Support\ServiceProvider;
 
