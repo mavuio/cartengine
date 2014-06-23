@@ -176,7 +176,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
     if ($orderdata['order_nr']) {
         $ordrec->order_nr=$orderdata['order_nr'];
     } else {
-        $ordrec->order_nr=$this->createNewOrderNr();      
+        $ordrec->order_nr=$this->createNewOrderNr();
     }
 
     $ordrec->items_json=json_encode($cart['items']);
@@ -193,6 +193,11 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $ordrec->fill($orderdata);
 
+    if (!$ordrec->status) {
+      $ordrec->status='created';
+    }
+
+
     \Log::info("create order:{$ordrec->order_nr} created", array('order' =>  $this->getOrderAsArray($ordrec),'serverdata'=>$_SERVER));
 
     if($ordrec->save())
@@ -206,35 +211,36 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
   function finalizeOrder($transaction_id)
   {
 
+    \Log::info('finalizeOrder  for order "'.$transaction_id.'"');
 
-      if(is_array($transaction_id))
-      {
-          // legacy code for old version of this function, an array was given instead of a 
-          $transaction_id=$transaction_id['orderdata']['transaction_id'];
-      }
-      
-      
+    if(is_array($transaction_id))
+    {
+// legacy code for old version of this function, an array was given instead of a
+      $transaction_id=$transaction_id['orderdata']['transaction_id'];
+    }
+
+
     $ret=Array('status'=>'error');
 
 
     if($transaction_id)
     {
-       $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
-       if($ordrec)
-       {
-         if($this->orderIsFinished($this->getOrderAsArray($ordrec)))
-         {
-            $ordrec->status='created';
-            if($ordrec->save())
-            {
+      $ordrec=$this->getOrderAsModelByTransactionId($transaction_id);
+      if($ordrec)
+      {
+        if($this->orderIsFinished($this->getOrderAsArray($ordrec)))
+        {
+          $ordrec->status='created';
+          if($ordrec->save())
+          {
             $ret['status']='ok';
             $ret['order']=$this->getOrderAsArray($ordrec);
             \Log::info("Order id:{$ret[order][id]} created", array('order' => $ret['order']));
             $event = \Event::fire('order.created',array($ret['order']));
-            }
-         }
+          }
+        }
 
-       }
+      }
     }
 
 
