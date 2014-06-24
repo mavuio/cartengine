@@ -231,7 +231,8 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
         if($this->orderIsFinished($this->getOrderAsArray($ordrec)))
         {
           $ordrec->status='created';
-          if($ordrec->save())
+          $ordrec->save();
+
           {
             $ret['status']='ok';
             $ret['order']=$this->getOrderAsArray($ordrec);
