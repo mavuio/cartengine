@@ -194,7 +194,7 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
     $ordrec->fill($orderdata);
 
     if (!$ordrec->status) {
-      $ordrec->status='created';
+      $ordrec->status='cart';
     }
 
 
