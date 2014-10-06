@@ -181,17 +181,28 @@ class OrderDbRepository implements \Werkzeugh\Cartengine\Interfaces\OrderReposit
 
     $ordrec->items_json=json_encode($cart['items']);
 
-    if($orderdata['mail_html'])
+    if($orderdata['mail_html']) {
       $ordrec->mail_html=$this->cleanUpMailHtml($orderdata['mail_html']);
+    }
+    
+    if($orderdata['status']) {
+      $ordrec->status=$orderdata['status'];
+    }
+    
     unset(
     $orderdata['agb_confirmed'], //deprecated
     $orderdata['terms_accepted'],
     $orderdata['transaction_id'],
     $orderdata['order_nr'],
-    $orderdata['mail_html']
+    $orderdata['mail_html'],
+    $orderdata['order_nr'],
+    $orderdata['status'],
+    $orderdata['bookingrequest_wait_until_day'],
+    $orderdata['bookingrequest_wait_until_time']
     );
-
+    
     $ordrec->fill($orderdata);
+
 
     if (!$ordrec->status) {
       $ordrec->status='cart';
